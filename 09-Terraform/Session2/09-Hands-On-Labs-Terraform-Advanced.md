@@ -1,7 +1,7 @@
-# Session 4: Remote State, Loops & Advanced Patterns — Hands-On Labs
+# Session 4: Remote State, Loops & Advanced Patterns - Hands-On Labs
 
 ## Overview
-In this final session, you'll configure a remote S3 backend with DynamoDB locking, use count and for_each to create multiple resources, implement conditionals, and import existing AWS resources.
+In this session, you'll configure a remote S3 backend with DynamoDB locking, use count and for_each to create multiple resources, implement conditionals, and import existing AWS resources.
 
 ---
 
@@ -130,7 +130,7 @@ Create N EC2 instances dynamically using count.
    ```hcl
    resource "aws_instance" "web" {
      count         = var.instance_count
-     ami           = "<ubuntu_ami_id_from_your_region>>"
+     ami           = "<ubuntu_ami_id_from_your_region>"
      instance_type = "t3.micro"
 
      tags = {
@@ -408,7 +408,7 @@ Adopt an existing AWS resource under Terraform management.
 4. **Check state:**
    ```bash
    terraform state show aws_s3_bucket.imported
-   # Shows the bucket attributes from AWS
+   # Shows the bucket arguments from AWS
    ```
 
 5. **Plan to see what's missing:**
@@ -421,7 +421,7 @@ Adopt an existing AWS resource under Terraform management.
    ```hcl
    resource "aws_s3_bucket" "imported" {
      bucket = "test-import-bucket-XXXXX"
-     # Add any other attributes...
+     # Add any other arguments...
    }
    ```
 
