@@ -1,0 +1,12 @@
+---
+- name: Configure web servers (nginx)
+  hosts: web
+  become: true
+  roles:
+    - role: nginx
+
+- name: Configure app servers (java)
+  hosts: app
+  become: true
+  roles:
+    - role: java

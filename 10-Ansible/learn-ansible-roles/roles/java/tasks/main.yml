@@ -1,0 +1,34 @@
+---
+- name: Ensure app user exists
+  user:
+    name: "{{ app_user }}"
+    shell: /bin/bash
+    create_home: yes
+  become: true
+
+- name: Install Java package
+  package:
+    name: "{{ java_package_name }}"
+    state: present
+  become: true
+
+- name: Ensure JAVA_HOME is set in /etc/profile.d/java.sh (if known)
+  copy:
+    dest: /etc/profile.d/java.sh
+    content: |
+      export JAVA_HOME={{ java_home }}
+      export PATH=$JAVA_HOME/bin:$PATH
+    owner: root
+    group: root
+    mode: '0644'
+  when: java_home != ""
+  become: true
+
+- name: Create application directory
+  file:
+    path: /opt/myapp
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0755'
+  become: true

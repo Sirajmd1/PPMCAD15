@@ -1,0 +1,3 @@
+nginx_package: "nginx"
+nginx_service_name: "nginx"
+nginx_root: "/var/www/html"

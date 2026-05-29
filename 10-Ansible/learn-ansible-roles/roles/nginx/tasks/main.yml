@@ -1,0 +1,40 @@
+---
+- name: Install Nginx package (apt)
+  apt:
+    name: "{{ nginx_package }}"
+    state: present
+  become: true
+
+- name: Ensure document root exists
+  file:
+    path: "{{ nginx_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  become: true
+
+- name: Deploy nginx vhost from template
+  template:
+    src: vhost.j2
+    dest: "/etc/nginx/sites-available/{{ nginx_vhost_server_name }}.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload nginx
+  become: true
+
+- name: Enable vhost (Debian style)
+  file:
+    src: "/etc/nginx/sites-available/{{ nginx_vhost_server_name }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ nginx_vhost_server_name }}.conf"
+    state: link
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Ensure nginx is running & enabled
+  service:
+    name: "{{ nginx_service_name }}"
+    state: started
+    enabled: true
+  become: true

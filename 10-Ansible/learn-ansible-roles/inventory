@@ -1,0 +1,20 @@
+[all:vars]
+ansible_ssh_private_key_file=/etc/ansible/key/private-key.pem
+ansible_user=ubuntu
+
+[web]
+web1 ansible_host=203.0.113.10 #Replace with your actual IPs
+web2 ansible_host=203.0.113.11 #Replace with your actual IPs
+
+[web:vars]
+nginx_vhost_server_name="localhost"
+nginx_listen_port=80
+
+[app]
+app1 ansible_host=10.0.11.10 #Replace with your actual IPs
+app2 ansible_host=10.0.11.11 #Replace with your actual IPs
+
+[app:vars]
+java_package_name="openjdk-11-jdk"
+java_home="/usr/lib/jvm/java-11-openjdk-amd64"
+app_user="appuser"
