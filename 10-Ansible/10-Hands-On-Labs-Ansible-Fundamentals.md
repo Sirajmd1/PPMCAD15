@@ -1,7 +1,7 @@
 # Ansible: Hands-On Labs
 ## Ansible Fundamentals & Playbooks
 
-**Prerequisites**: create 2 ubuntu ec2 servers of type t3.small on AWS. 
+**Prerequisites**: create 2 ubuntu ec2 servers of type t3.small on AWS.
 Name one as "Control Node" and another as "Managed Node"
 
 Control Node is where we install the Ansible server and Managed Node/s are the ones which are managed by Ansible.
@@ -349,7 +349,25 @@ ssl_key: |
   -----END PRIVATE KEY-----
 ```
 
-### 6.2 Use secrets in playbook
+### 6.2 Create the config template
+
+Create `app.conf.j2`:
+```jinja
+# Application configuration
+# Managed by Ansible - do not edit manually
+
+[database]
+password = {{ db_password }}
+
+[api]
+key = {{ api_key }}
+
+[ssl]
+private_key =
+{{ ssl_key | indent(2) }}
+```
+
+### 6.3 Use secrets in playbook
 
 Create `deploy-with-secrets.yml`:
 ```yaml
@@ -367,6 +385,14 @@ Create `deploy-with-secrets.yml`:
         msg: "DB Password: {{ db_password }}"
       no_log: yes
 
+    - name: Ensure config directory exists
+      file:
+        path: /etc/app
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Create config file with secrets
       template:
         src: app.conf.j2
@@ -377,7 +403,7 @@ Create `deploy-with-secrets.yml`:
       no_log: yes
 ```
 
-### 6.3 Run with vault
+### 6.4 Run with vault
 
 ```bash
 # Run playbook (will prompt for vault password)
@@ -397,10 +423,12 @@ ansible-vault view secrets.yml
 # Edit encrypted file
 ansible-vault edit secrets.yml
 
-# Decrypt (creates unencrypted copy)
+# Decrypt in place (file becomes plaintext!)
 ansible-vault decrypt secrets.yml
-```
 
+# Or decrypt to a separate file, keeping the original encrypted
+ansible-vault decrypt secrets.yml --output secrets-plain.yml
+```
 ---
 
 ## Lab 7: Setup
